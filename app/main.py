@@ -327,6 +327,101 @@ async def root():
                 font-weight: 500;
             }
             
+            .analysis-form-section {
+                background: #f8f9ff;
+                padding: 40px;
+                border-radius: 15px;
+                margin: 40px 0;
+                border: 2px solid #e1e5ff;
+            }
+            
+            .analysis-form {
+                max-width: 600px;
+                margin: 30px auto 0;
+            }
+            
+            .form-group {
+                margin-bottom: 25px;
+            }
+            
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #333;
+                font-size: 1.1rem;
+            }
+            
+            .form-group input[type="text"],
+            .form-group select {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #e1e5ff;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-family: inherit;
+                transition: all 0.3s ease;
+                background: white;
+            }
+            
+            .form-group input[type="text"]:focus,
+            .form-group select:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+            
+            .btn-analyze {
+                width: 100%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 18px 30px;
+                border: none;
+                border-radius: 10px;
+                font-size: 1.1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .btn-analyze:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            }
+            
+            .btn-analyze:active {
+                transform: translateY(0);
+            }
+            
+            .analysis-result {
+                margin-top: 30px;
+                padding: 25px;
+                background: white;
+                border-radius: 10px;
+                border: 2px solid #e1e5ff;
+            }
+            
+            .loading {
+                text-align: center;
+                color: #667eea;
+                font-size: 1.1rem;
+                font-weight: 500;
+            }
+            
+            .loading i {
+                margin-right: 10px;
+                animation: spin 1s linear infinite;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
             @media (max-width: 768px) {
                 .header h1 {
                     font-size: 2rem;
@@ -339,6 +434,10 @@ async def root():
                 .cta-buttons {
                     flex-direction: column;
                     align-items: center;
+                }
+                
+                .analysis-form-section {
+                    padding: 25px;
                 }
             }
         </style>
@@ -387,6 +486,35 @@ async def root():
                         <a href="/health" class="btn btn-secondary">
                             <i class="fas fa-heartbeat"></i> API Status
                         </a>
+                    </div>
+                </div>
+                
+                <div class="analysis-form-section">
+                    <h2><i class="fas fa-search"></i> Analyze Any Sector</h2>
+                    <p>Enter a sector name and get instant AI-powered market analysis:</p>
+                    <form id="analysisForm" class="analysis-form">
+                        <div class="form-group">
+                            <label for="sector">Sector Name:</label>
+                            <input type="text" id="sector" name="sector" placeholder="e.g., technology, pharmaceuticals, banking" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="api_key">API Key:</label>
+                            <select id="api_key" name="api_key" required>
+                                <option value="demo-key-123">demo-key-123 (Default)</option>
+                                <option value="guest-access-456">guest-access-456</option>
+                                <option value="public-api-789">public-api-789</option>
+                                <option value="custom">Enter Custom Key</option>
+                            </select>
+                            <input type="text" id="custom_api_key" name="custom_api_key" placeholder="Enter your custom API key" style="display: none; margin-top: 10px;">
+                        </div>
+                        <button type="submit" class="btn btn-analyze">
+                            <i class="fas fa-chart-line"></i> Analyze Sector
+                        </button>
+                    </form>
+                    <div id="analysisResult" class="analysis-result" style="display: none;">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Generating analysis...
+                        </div>
                     </div>
                 </div>
                 

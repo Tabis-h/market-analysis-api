@@ -10,29 +10,19 @@ class AIAnalyzer:
     def __init__(self):
         if settings.GEMINI_API_KEY:
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            # Try different model names in order of preference
-            model_names = [
-                'gemini-1.5-flash',
-                'gemini-1.5-pro', 
-                'gemini-pro-latest',
-                'gemini-pro'
-            ]
-            
-            self.model = None
-            for model_name in model_names:
-                try:
-                    self.model = genai.GenerativeModel(model_name)
-                    # Test the model with a simple prompt
-                    test_response = self.model.generate_content("Hello")
-                    if test_response and test_response.text:
-                        logger.info(f"Successfully initialized Gemini model: {model_name}")
-                        break
-                except Exception as e:
-                    logger.warning(f"Failed to initialize model {model_name}: {str(e)}")
-                    continue
-            
-            if not self.model:
-                logger.error("Failed to initialize any Gemini model. AI analysis will be simulated.")
+            # Use only gemini-1.5-flash model to avoid API errors
+            try:
+                self.model = genai.GenerativeModel('gemini-1.5-flash')
+                # Test the model with a simple prompt
+                test_response = self.model.generate_content("Hello")
+                if test_response and test_response.text:
+                    logger.info("Successfully initialized Gemini model: gemini-1.5-flash")
+                else:
+                    self.model = None
+                    logger.error("Failed to get response from gemini-1.5-flash model")
+            except Exception as e:
+                logger.error(f"Failed to initialize gemini-1.5-flash model: {str(e)}")
+                self.model = None
         else:
             self.model = None
             logger.warning("Gemini API key not configured. AI analysis will be simulated.")
