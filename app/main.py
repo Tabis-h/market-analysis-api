@@ -482,15 +482,17 @@ async def health_check():
         gemini_api_configured=bool(settings.GEMINI_API_KEY)
     )
 
-@app.get("/analyze/{sector}", response_model=SectorAnalysisResponse)
+@app.get("/analyze/{sector}")
 @limiter.limit("10/minute")
 async def analyze_sector(
     sector: str,
     request: Request,
-    api_key: str = Depends(verify_api_key)
+    api_key: str = Depends(verify_api_key),
+    format: str = "auto"  # auto, json, html
 ):
     """
     Analyze a specific market sector and return comprehensive insights
+    Returns HTML for browser requests, JSON for API calls
     """
     start_time = time.time()
     
@@ -590,6 +592,296 @@ async def analyze_sector(
         processing_time = time.time() - start_time
         logger.info(f"Analysis completed for {sector} in {processing_time:.2f}s")
         
+        # Determine response format
+        user_agent = request.headers.get("user-agent", "").lower()
+        accept_header = request.headers.get("accept", "").lower()
+        
+        # Return HTML if request is from a browser
+        if (format == "html" or 
+            (format == "auto" and 
+             ("mozilla" in user_agent or "chrome" in user_agent or "safari" in user_agent) and 
+             "text/html" in accept_header)):
+            
+            # Convert markdown to HTML-friendly format
+            import re
+            html_report = analysis_report
+            
+            # Convert markdown headers to HTML
+            html_report = re.sub(r'^# (.+)$', r'<h1>\1</h1>', html_report, flags=re.MULTILINE)
+            html_report = re.sub(r'^## (.+)$', r'<h2>\1</h2>', html_report, flags=re.MULTILINE)
+            html_report = re.sub(r'^### (.+)$', r'<h3>\1</h3>', html_report, flags=re.MULTILINE)
+            html_report = re.sub(r'^#### (.+)$', r'<h4>\1</h4>', html_report, flags=re.MULTILINE)
+            
+            # Convert markdown bold to HTML
+            html_report = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', html_report)
+            
+            # Convert markdown italic to HTML
+            html_report = re.sub(r'\*(.+?)\*', r'<em>\1</em>', html_report)
+            
+            # Convert markdown lists to HTML
+            lines = html_report.split('\n')
+            in_list = False
+            processed_lines = []
+            
+            for line in lines:
+                if line.strip().startswith('- '):
+                    if not in_list:
+                        processed_lines.append('<ul>')
+                        in_list = True
+                    processed_lines.append(f'<li>{line[2:].strip()}</li>')
+                else:
+                    if in_list:
+                        processed_lines.append('</ul>')
+                        in_list = False
+                    if line.strip():
+                        processed_lines.append(f'<p>{line}</p>')
+                    else:
+                        processed_lines.append('<br>')
+            
+            if in_list:
+                processed_lines.append('</ul>')
+            
+            html_report = '\n'.join(processed_lines)
+            
+            # Return beautiful HTML response
+            html_content = f"""
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Market Analysis Report - {sector.title()} Sector</title>
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+                <style>
+                    * {{
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }}
+                    
+                    body {{
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        line-height: 1.7;
+                        color: #333;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        min-height: 100vh;
+                        padding: 20px;
+                    }}
+                    
+                    .container {{
+                        max-width: 1000px;
+                        margin: 0 auto;
+                        background: white;
+                        border-radius: 20px;
+                        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                        overflow: hidden;
+                    }}
+                    
+                    .header {{
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        padding: 40px;
+                        text-align: center;
+                    }}
+                    
+                    .header h1 {{
+                        font-size: 2.5rem;
+                        margin-bottom: 10px;
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                    }}
+                    
+                    .meta-info {{
+                        background: #f8f9ff;
+                        padding: 25px 40px;
+                        border-bottom: 1px solid #e1e5ff;
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                        gap: 20px;
+                    }}
+                    
+                    .meta-item {{
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }}
+                    
+                    .meta-icon {{
+                        color: #667eea;
+                        font-size: 1.2rem;
+                    }}
+                    
+                    .content {{
+                        padding: 40px;
+                    }}
+                    
+                    .content h1 {{
+                        color: #333;
+                        font-size: 2rem;
+                        margin: 30px 0 20px 0;
+                        padding-bottom: 10px;
+                        border-bottom: 3px solid #667eea;
+                    }}
+                    
+                    .content h2 {{
+                        color: #444;
+                        font-size: 1.5rem;
+                        margin: 25px 0 15px 0;
+                        padding-left: 15px;
+                        border-left: 4px solid #667eea;
+                    }}
+                    
+                    .content h3 {{
+                        color: #555;
+                        font-size: 1.2rem;
+                        margin: 20px 0 10px 0;
+                    }}
+                    
+                    .content h4 {{
+                        color: #666;
+                        font-size: 1.1rem;
+                        margin: 15px 0 8px 0;
+                    }}
+                    
+                    .content p {{
+                        margin: 15px 0;
+                        text-align: justify;
+                    }}
+                    
+                    .content ul {{
+                        margin: 15px 0;
+                        padding-left: 30px;
+                    }}
+                    
+                    .content li {{
+                        margin: 8px 0;
+                        list-style-type: disc;
+                    }}
+                    
+                    .content strong {{
+                        color: #333;
+                        font-weight: 600;
+                    }}
+                    
+                    .content em {{
+                        color: #666;
+                        font-style: italic;
+                    }}
+                    
+                    .back-button {{
+                        position: fixed;
+                        top: 20px;
+                        left: 20px;
+                        background: rgba(255,255,255,0.9);
+                        color: #667eea;
+                        padding: 10px 20px;
+                        border-radius: 50px;
+                        text-decoration: none;
+                        font-weight: bold;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                        transition: all 0.3s ease;
+                        z-index: 1000;
+                    }}
+                    
+                    .back-button:hover {{
+                        background: white;
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    }}
+                    
+                    .json-toggle {{
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: rgba(255,255,255,0.9);
+                        color: #667eea;
+                        padding: 10px 20px;
+                        border-radius: 50px;
+                        text-decoration: none;
+                        font-weight: bold;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                        transition: all 0.3s ease;
+                        z-index: 1000;
+                    }}
+                    
+                    .json-toggle:hover {{
+                        background: white;
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    }}
+                    
+                    @media (max-width: 768px) {{
+                        .header h1 {{
+                            font-size: 1.8rem;
+                        }}
+                        
+                        .content {{
+                            padding: 20px;
+                        }}
+                        
+                        .meta-info {{
+                            padding: 20px;
+                            grid-template-columns: 1fr;
+                        }}
+                    }}
+                </style>
+            </head>
+            <body>
+                <a href="/" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to API
+                </a>
+                
+                <a href="?format=json&api_key={request.query_params.get('api_key', 'demo-key-123')}" class="json-toggle">
+                    <i class="fas fa-code"></i> View JSON
+                </a>
+                
+                <div class="container">
+                    <div class="header">
+                        <h1><i class="fas fa-chart-line"></i> Market Analysis Report</h1>
+                        <p>{sector.title()} Sector Analysis</p>
+                    </div>
+                    
+                    <div class="meta-info">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar meta-icon"></i>
+                            <div>
+                                <strong>Generated:</strong><br>
+                                {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-database meta-icon"></i>
+                            <div>
+                                <strong>Data Sources:</strong><br>
+                                {sector_data.get('data_points', 0)} sources analyzed
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock meta-icon"></i>
+                            <div>
+                                <strong>Processing Time:</strong><br>
+                                {processing_time:.1f} seconds
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tag meta-icon"></i>
+                            <div>
+                                <strong>Session ID:</strong><br>
+                                {session_id}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="content">
+                        {html_report}
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            return HTMLResponse(content=html_content)
+        
+        # Return JSON for API calls
         return SectorAnalysisResponse(
             sector=sector,
             analysis_report=analysis_report,
