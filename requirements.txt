@@ -1,0 +1,21 @@
+# Core FastAPI and server
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+
+# Data models and validation
+pydantic==2.10.4
+
+# HTTP requests and web scraping
+requests==2.32.3
+aiohttp==3.11.8
+beautifulsoup4==4.12.3
+
+# AI and search
+google-generativeai==0.8.3
+duckduckgo-search==7.2.1
+
+# Rate limiting and security
+slowapi==0.1.9
+
+# Configuration
+python-dotenv==1.0.1
