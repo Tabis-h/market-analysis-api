@@ -123,76 +123,352 @@ async def periodic_cleanup():
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    """Root endpoint with API information"""
+    """Beautiful professional homepage for the Market Analysis API"""
     return """
-    <html>
-        <head>
-            <title>Market Analysis API</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; }
-                .header { color: #333; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
-                .section { margin: 20px 0; }
-                .endpoint { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; }
-                .method { color: #007acc; font-weight: bold; }
-            </style>
-        </head>
-        <body>
-            <h1 class="header">Market Analysis API</h1>
-            <div class="section">
-                <h2>Welcome to the Market Analysis API</h2>
-                <p>This API provides comprehensive market analysis for various sectors in India.</p>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Market Analysis API - AI-Powered Market Intelligence</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+            }
+            
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            
+            .header {
+                text-align: center;
+                color: white;
+                margin-bottom: 50px;
+                padding: 40px 0;
+            }
+            
+            .header h1 {
+                font-size: 3rem;
+                margin-bottom: 10px;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            }
+            
+            .header p {
+                font-size: 1.2rem;
+                opacity: 0.9;
+            }
+            
+            .main-content {
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                margin-bottom: 30px;
+            }
+            
+            .features {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+                margin: 40px 0;
+            }
+            
+            .feature-card {
+                background: #f8f9ff;
+                padding: 30px;
+                border-radius: 15px;
+                text-align: center;
+                border: 2px solid #e1e5ff;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            
+            .feature-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            }
+            
+            .feature-icon {
+                font-size: 3rem;
+                color: #667eea;
+                margin-bottom: 20px;
+            }
+            
+            .feature-card h3 {
+                color: #333;
+                margin-bottom: 15px;
+                font-size: 1.3rem;
+            }
+            
+            .cta-section {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px;
+                border-radius: 15px;
+                text-align: center;
+                margin: 40px 0;
+            }
+            
+            .cta-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin-top: 30px;
+            }
+            
+            .btn {
+                padding: 15px 30px;
+                border: none;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: bold;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .btn-primary {
+                background: white;
+                color: #667eea;
+            }
+            
+            .btn-secondary {
+                background: rgba(255,255,255,0.2);
+                color: white;
+                border: 2px solid white;
+            }
+            
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            }
+            
+            .demo-section {
+                background: #f8f9ff;
+                padding: 40px;
+                border-radius: 15px;
+                margin: 40px 0;
+            }
+            
+            .demo-links {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-top: 30px;
+            }
+            
+            .demo-link {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                text-decoration: none;
+                color: #333;
+                border: 2px solid #e1e5ff;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .demo-link:hover {
+                border-color: #667eea;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            
+            .api-info {
+                background: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 10px;
+                padding: 25px;
+                margin: 30px 0;
+            }
+            
+            .code-block {
+                background: #2d3748;
+                color: #e2e8f0;
+                padding: 20px;
+                border-radius: 8px;
+                font-family: 'Courier New', monospace;
+                font-size: 0.9rem;
+                overflow-x: auto;
+                margin: 15px 0;
+            }
+            
+            .sectors-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+                margin: 20px 0;
+            }
+            
+            .sector-tag {
+                background: #667eea;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 20px;
+                text-align: center;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+            
+            @media (max-width: 768px) {
+                .header h1 {
+                    font-size: 2rem;
+                }
+                
+                .main-content {
+                    padding: 20px;
+                }
+                
+                .cta-buttons {
+                    flex-direction: column;
+                    align-items: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1><i class="fas fa-chart-line"></i> Market Analysis API</h1>
+                <p>AI-Powered Market Intelligence for Indian Sectors</p>
             </div>
             
-            <div class="section">
-                <h2>Available Endpoints:</h2>
-                
-                <div class="endpoint">
-                    <span class="method">GET</span> <strong>/analyze/{sector}</strong><br>
-                    Get market analysis for a specific sector (requires API key)
+            <div class="main-content">
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI-Powered Analysis</h3>
+                        <p>Advanced AI using Google Gemini to provide deep market insights and trends analysis</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h3>Real-time Data</h3>
+                        <p>Live market data collection from multiple sources for up-to-date analysis</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Secure & Rate Limited</h3>
+                        <p>Built-in security with API key authentication and intelligent rate limiting</p>
+                    </div>
                 </div>
                 
-                <div class="endpoint">
-                    <span class="method">GET</span> <strong>/health</strong><br>
-                    Check API health status
+                <div class="cta-section">
+                    <h2>🚀 Get Started in Seconds</h2>
+                    <p>No registration required - start analyzing markets immediately!</p>
+                    <div class="cta-buttons">
+                        <a href="/docs" class="btn btn-primary">
+                            <i class="fas fa-book"></i> Interactive Docs
+                        </a>
+                        <a href="/health" class="btn btn-secondary">
+                            <i class="fas fa-heartbeat"></i> API Status
+                        </a>
+                    </div>
                 </div>
                 
-                <div class="endpoint">
-                    <span class="method">GET</span> <strong>/docs</strong><br>
-                    Interactive API documentation
+                <div class="demo-section">
+                    <h2><i class="fas fa-play-circle"></i> Try Live Demos</h2>
+                    <p>Click any sector below to see instant AI analysis:</p>
+                    <div class="demo-links">
+                        <a href="/analyze/technology?api_key=demo-key-123" class="demo-link" target="_blank">
+                            <i class="fas fa-microchip"></i>
+                            <div>
+                                <strong>Technology</strong><br>
+                                <small>IT, Software, Hardware</small>
+                            </div>
+                        </a>
+                        <a href="/analyze/pharmaceuticals?api_key=demo-key-123" class="demo-link" target="_blank">
+                            <i class="fas fa-pills"></i>
+                            <div>
+                                <strong>Pharmaceuticals</strong><br>
+                                <small>Healthcare, Drugs, Medical</small>
+                            </div>
+                        </a>
+                        <a href="/analyze/banking?api_key=demo-key-123" class="demo-link" target="_blank">
+                            <i class="fas fa-university"></i>
+                            <div>
+                                <strong>Banking</strong><br>
+                                <small>Finance, Loans, Digital Banking</small>
+                            </div>
+                        </a>
+                        <a href="/analyze/energy?api_key=demo-key-123" class="demo-link" target="_blank">
+                            <i class="fas fa-bolt"></i>
+                            <div>
+                                <strong>Energy</strong><br>
+                                <small>Renewable, Solar, Power</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="api-info">
+                    <h3><i class="fas fa-code"></i> Quick API Usage</h3>
+                    <p><strong>Simple Browser Request:</strong></p>
+                    <div class="code-block">
+https://your-api-url.railway.app/analyze/technology?api_key=demo-key-123
+                    </div>
+                    
+                    <p><strong>Python Example:</strong></p>
+                    <div class="code-block">
+import requests
+
+response = requests.get(
+    "https://your-api-url.railway.app/analyze/technology",
+    headers={"x-api-key": "demo-key-123"}
+)
+
+analysis = response.json()
+print(analysis['analysis_report'])
+                    </div>
+                </div>
+                
+                <div>
+                    <h3><i class="fas fa-industry"></i> Supported Sectors</h3>
+                    <div class="sectors-grid">
+                        <div class="sector-tag">Technology</div>
+                        <div class="sector-tag">Pharmaceuticals</div>
+                        <div class="sector-tag">Banking</div>
+                        <div class="sector-tag">Automotive</div>
+                        <div class="sector-tag">Energy</div>
+                        <div class="sector-tag">Agriculture</div>
+                        <div class="sector-tag">Steel</div>
+                        <div class="sector-tag">FMCG</div>
+                        <div class="sector-tag">Telecom</div>
+                        <div class="sector-tag">Real Estate</div>
+                        <div class="sector-tag">Healthcare</div>
+                        <div class="sector-tag">Infrastructure</div>
+                    </div>
+                    <p style="text-align: center; margin-top: 20px; color: #666;">
+                        <i>...and many more sectors supported</i>
+                    </p>
                 </div>
             </div>
-            
-            <div class="section">
-                <h2>Authentication:</h2>
-                <p>This API uses simple API key authentication. You can provide the API key in two ways:</p>
-                <p><strong>Method 1: Request Header</strong></p>
-                <code>x-api-key: your-api-key-here</code>
-                <p><strong>Method 2: URL Query Parameter (for browser testing)</strong></p>
-                <code>?api_key=your-api-key-here</code>
-                <p><strong>Demo API Keys:</strong></p>
-                <ul>
-                    <li><code>demo-key-123</code></li>
-                    <li><code>guest-access-456</code></li>
-                    <li><code>public-api-789</code></li>
-                </ul>
-            </div>
-            
-            <div class="section">
-                <h2>Try it in your browser:</h2>
-                <p>Click these links to test the API directly:</p>
-                <ul>
-                    <li><a href="/analyze/technology?api_key=demo-key-123" target="_blank">Technology Sector Analysis</a></li>
-                    <li><a href="/analyze/pharmaceuticals?api_key=demo-key-123" target="_blank">Pharmaceuticals Analysis</a></li>
-                    <li><a href="/analyze/banking?api_key=demo-key-123" target="_blank">Banking Sector Analysis</a></li>
-                    <li><a href="/analyze/energy?api_key=demo-key-123" target="_blank">Energy Sector Analysis</a></li>
-                </ul>
-            </div>
-            
-            <div class="section">
-                <h2>Supported Sectors:</h2>
-                <p>pharmaceuticals, technology, banking, automotive, agriculture, energy, steel, cement, fmcg, telecom, and more...</p>
-            </div>
-        </body>
+        </div>
+    </body>
     </html>
     """
 
