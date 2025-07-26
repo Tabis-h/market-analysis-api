@@ -596,6 +596,48 @@ print(analysis['analysis_report'])
                 </div>
             </div>
         </div>
+        
+        <script>
+        // Handle form submission
+        document.getElementById('analysisForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const sector = document.getElementById('sector').value.trim();
+            let apiKey = document.getElementById('api_key').value;
+            
+            // Handle custom API key
+            if(apiKey === 'custom') {
+                apiKey = document.getElementById('custom_api_key').value.trim();
+            }
+            
+            // Validation
+            if(!sector) {
+                alert('Please enter a sector name.');
+                return;
+            }
+            
+            if(!apiKey) {
+                alert('Please enter a valid API key.');
+                return;
+            }
+            
+            // Build URL and redirect
+            const url = `/analyze/${encodeURIComponent(sector)}?api_key=${encodeURIComponent(apiKey)}`;
+            window.location.href = url;
+        });
+        
+        // Show/hide custom API key input
+        document.getElementById('api_key').addEventListener('change', function() {
+            const customInput = document.getElementById('custom_api_key');
+            if(this.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customInput.style.display = 'none';
+                customInput.required = false;
+            }
+        });
+        </script>
     </body>
     </html>
     """
