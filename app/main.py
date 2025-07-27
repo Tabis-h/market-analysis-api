@@ -171,6 +171,37 @@ async def root():
                 opacity: 0.9;
             }
             
+            .github-profile {
+                margin-top: 20px;
+            }
+            
+            .github-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(255, 255, 255, 0.15);
+                color: white;
+                text-decoration: none;
+                padding: 12px 20px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 1rem;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                transition: all 0.3s ease;
+                backdrop-filter: blur(10px);
+            }
+            
+            .github-link:hover {
+                background: rgba(255, 255, 255, 0.25);
+                border-color: rgba(255, 255, 255, 0.5);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            }
+            
+            .github-link i {
+                font-size: 1.2rem;
+            }
+            
             .main-content {
                 background: white;
                 border-radius: 20px;
@@ -446,7 +477,12 @@ async def root():
         <div class="container">
             <div class="header">
                 <h1><i class="fas fa-chart-line"></i> Market Analysis API</h1>
-                <p>AI-Powered Market Intelligence for Indian Sectors</p>
+                <p>made by tabish for app scrip assignment</p>
+                <div class="github-profile">
+                    <a href="https://github.com/Tabis-h" target="_blank" class="github-link">
+                        <i class="fab fa-github"></i> View on GitHub - @Tabis-h
+                    </a>
+                </div>
             </div>
             
             <div class="main-content">
